@@ -1,4 +1,4 @@
-package com.colormatch.color_match
+package com.xufagroup.color_match
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.colormatch.color_match"
+    namespace = "com.xufagroup.color_match"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -20,9 +20,8 @@ android {
     }
 
     defaultConfig {
-        // Application ID uses the required com.xufagroup. prefix. The code
-        // namespace (above) is intentionally left unchanged.
-        applicationId = "com.xufagroup.colormatch"
+        // Application ID and code namespace are unified as com.xufagroup.color_match.
+        applicationId = "com.xufagroup.color_match"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion

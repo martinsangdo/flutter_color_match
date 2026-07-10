@@ -104,8 +104,10 @@ Shared move heuristic: `lib/data/levels/placement_strategy.dart` (`bestPlacement
 
 ## Identifiers
 
-- Application ID (Android `applicationId`, iOS bundle id): **`com.xufagroup.colormatch`**
-  / `com.xufagroup.colorMatch`. (Android code `namespace` was left unchanged.)
+- Application ID / bundle identifier: **`com.xufagroup.color_match`** — unified across
+  Android `applicationId`, Android code `namespace` (Kotlin package
+  `com.xufagroup.color_match`), and the iOS `PRODUCT_BUNDLE_IDENTIFIER`
+  (tests use `com.xufagroup.color_match.RunnerTests`).
 
 ## Commands
 
