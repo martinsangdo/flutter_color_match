@@ -33,17 +33,27 @@ class TrayWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: List.generate(kTraySize, (i) {
           final piece = tray[i];
-          if (piece == null || activeIndex == i) {
+          if (piece == null) {
             return const Expanded(child: SizedBox());
           }
+          // While this slot is the one being dragged we render it invisibly
+          // rather than removing it: the _TrayItem owns the GestureDetector
+          // whose PanGestureRecognizer is mid-drag. Unmounting it here would
+          // dispose that recognizer, so onPanUpdate/onPanEnd would stop firing
+          // and the piece would freeze / never place. Opacity(0) keeps the
+          // recognizer alive for the whole drag while hiding the tray copy.
+          final isActive = activeIndex == i;
           return Expanded(
             child: Center(
-              child: _TrayItem(
-                piece: piece,
-                boardWidth: boardWidth,
-                onDragStart: (pos) => onDragStart(i, pos),
-                onDragUpdate: (pos) => onDragUpdate(i, pos),
-                onDragEnd: () => onDragEnd(i),
+              child: Opacity(
+                opacity: isActive ? 0.0 : 1.0,
+                child: _TrayItem(
+                  piece: piece,
+                  boardWidth: boardWidth,
+                  onDragStart: (pos) => onDragStart(i, pos),
+                  onDragUpdate: (pos) => onDragUpdate(i, pos),
+                  onDragEnd: () => onDragEnd(i),
+                ),
               ),
             ),
           );

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/providers.dart';
-import '../../core/widgets/app_logo.dart';
 import '../home/home_screen.dart';
 import '../how_to_play/how_to_play_screen.dart';
 
@@ -44,9 +43,15 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       backgroundColor: Colors.white,
-      body: Center(child: AppLogo(size: 140)),
+      body: Center(
+        child: Image.asset(
+          'assets/images/xp_group_logo.png',
+          width: 240,
+          fit: BoxFit.contain,
+        ),
+      ),
     );
   }
 }
