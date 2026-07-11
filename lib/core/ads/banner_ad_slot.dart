@@ -22,6 +22,7 @@ class BannerAdSlot extends StatefulWidget {
 class _BannerAdSlotState extends State<BannerAdSlot> {
   BannerAd? _ad;
   bool _loaded = false;
+  String? _error;
 
   static const double _height = 56;
 
@@ -40,7 +41,14 @@ class _BannerAdSlotState extends State<BannerAdSlot> {
         onAdLoaded: (_) {
           if (mounted) setState(() => _loaded = true);
         },
-        onAdFailedToLoad: (ad, _) => ad.dispose(),
+        onAdFailedToLoad: (ad, error) {
+          // Surface *why* the ad didn't load — most often code 3 ("no fill"),
+          // which is normal for a brand-new AdMob unit that hasn't started
+          // serving yet (can take a few hours to ~48h after creation).
+          debugPrint('Banner ad failed to load: $error');
+          ad.dispose();
+          if (mounted) setState(() => _error = 'code ${error.code}: ${error.message}');
+        },
       ),
     );
     ad.load();
