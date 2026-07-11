@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../app/providers.dart';
 import '../../core/ads/banner_ad_slot.dart';
+import '../../core/ads/rewarded_hint_ad.dart';
 import '../../core/theme/app_theme.dart';
 import '../../data/models/board.dart';
 import '../../data/models/level.dart';
@@ -27,6 +28,8 @@ class GameplayScreen extends ConsumerStatefulWidget {
 
 class _GameplayScreenState extends ConsumerState<GameplayScreen> {
   late final GameSessionController _controller;
+  final RewardedHintAd _hintAd = RewardedHintAd();
+  bool _hintLoading = false;
   LevelDefinition? _level;
 
   final GlobalKey _boardKey = GlobalKey();
@@ -50,12 +53,14 @@ class _GameplayScreenState extends ConsumerState<GameplayScreen> {
     }
     _controller = GameSessionController(level: _level, audio: audio);
     _controller.addListener(_onChanged);
+    _hintAd.preload();
   }
 
   @override
   void dispose() {
     _controller.removeListener(_onChanged);
     _controller.dispose();
+    _hintAd.dispose();
     super.dispose();
   }
 
@@ -181,15 +186,14 @@ class _GameplayScreenState extends ConsumerState<GameplayScreen> {
   }
 
   void _onHintPressed() {
-    if (_controller.engine.status != GameStatus.playing) return;
+    if (_controller.engine.status != GameStatus.playing || _hintLoading) return;
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.panel,
         title: const Text('Hint', style: TextStyle(color: AppColors.textPrimary)),
         content: const Text(
-          'Watch a short ad for a hint — rewarded ads coming soon.\n\n'
-          'For now, tap "Show me" to highlight a good move.',
+          'Watch a short ad to reveal a good move.',
           style: TextStyle(color: AppColors.textMuted),
         ),
         actions: [
@@ -200,13 +204,33 @@ class _GameplayScreenState extends ConsumerState<GameplayScreen> {
           FilledButton(
             onPressed: () {
               Navigator.of(ctx).pop();
-              _controller.requestHint();
+              _watchAdForHint();
             },
-            child: const Text('Show me'),
+            child: const Text('Watch ad'),
           ),
         ],
       ),
     );
+  }
+
+  Future<void> _watchAdForHint() async {
+    setState(() => _hintLoading = true);
+    bool earned;
+    try {
+      earned = await _hintAd.show();
+    } finally {
+      if (mounted) setState(() => _hintLoading = false);
+    }
+    if (!mounted) return;
+    if (earned) {
+      if (_controller.engine.status == GameStatus.playing) {
+        _controller.requestHint();
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No hint — ad was not completed.')),
+      );
+    }
   }
 
   Set<int> _hintCells() {
@@ -310,9 +334,18 @@ class _GameplayScreenState extends ConsumerState<GameplayScreen> {
           else
             _chip(Icons.stars_rounded, '${_controller.engine.score}'),
           IconButton(
-            icon: const Icon(Icons.lightbulb_outline, color: AppColors.star),
+            icon: _hintLoading
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation(AppColors.star),
+                    ),
+                  )
+                : const Icon(Icons.lightbulb_outline, color: AppColors.star),
             tooltip: 'Hint',
-            onPressed: _onHintPressed,
+            onPressed: _hintLoading ? null : _onHintPressed,
           ),
           IconButton(
             icon: const Icon(Icons.refresh, color: AppColors.textMuted),
