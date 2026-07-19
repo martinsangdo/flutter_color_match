@@ -73,9 +73,13 @@ class _BannerAdSlotState extends State<BannerAdSlot> {
       );
     }
 
-    // Reserved placeholder region. In debug builds, show the load error (if
-    // any) so failures are diagnosable on-device without a logcat/console.
-    final label = (kDebugMode && _error != null)
+    // No ad to show. In release builds, take up no space and show nothing —
+    // the labelled placeholder is a development aid only. In debug builds we
+    // keep the labelled region (and surface the load error, if any) so the
+    // slot is easy to find and failures are diagnosable on-device.
+    if (!kDebugMode) return const SizedBox.shrink();
+
+    final label = _error != null
         ? 'Ad failed — $_error'
         : '[ Banner Ad Placeholder ]';
     return Container(

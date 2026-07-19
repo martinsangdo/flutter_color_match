@@ -70,7 +70,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
               const Padding(
                 padding: EdgeInsets.all(16),
-                child: Text('Colour Match · v1.0.0',
+                child: Text('Color Match · v1.0.0',
                     style: TextStyle(color: AppColors.textMuted, fontSize: 12)),
               ),
             ],

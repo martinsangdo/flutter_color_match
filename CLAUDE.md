@@ -1,4 +1,4 @@
-# Colour Match — Claude Code onboarding
+# Color Match — Claude Code onboarding
 
 A cross-platform Flutter puzzle game (Android / iOS, also runs on Web). This
 file orients a fresh Claude Code session; read it before making changes.

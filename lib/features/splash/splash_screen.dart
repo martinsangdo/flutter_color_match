@@ -25,6 +25,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     final start = DateTime.now();
     // Kick off async work during the splash window.
     final settings = await ref.read(settingsRepositoryProvider).load();
+    // Apply persisted sound/music prefs to the audio service now. Providers are
+    // lazy, so without this the AudioService keeps its default (everything on)
+    // until the Settings screen is opened — meaning muted users still hear
+    // music/SFX from Home and gameplay on a fresh launch.
+    ref.read(audioServiceProvider)
+        .applySettings(soundOn: settings.soundOn, musicOn: settings.musicOn);
+    ref.read(settingsProvider); // warm the settings notifier so state stays in sync
     ref.read(progressProvider); // warm the progress store
 
     final elapsed = DateTime.now().difference(start);

@@ -9,7 +9,7 @@ class ColorMatchApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Colour Match',
+      title: 'Color Match',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.dark,
       home: const SplashScreen(),

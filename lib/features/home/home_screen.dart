@@ -41,7 +41,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               const Spacer(flex: 2),
               const AppLogo(size: 128),
               const SizedBox(height: 20),
-              Text('Colour Match', style: AppTheme.title(34)),
+              Text('Color Match', style: AppTheme.title(34)),
               const SizedBox(height: 6),
               Row(
                 mainAxisSize: MainAxisSize.min,
