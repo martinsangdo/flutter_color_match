@@ -73,7 +73,11 @@ class _BannerAdSlotState extends State<BannerAdSlot> {
       );
     }
 
-    // Reserved placeholder region.
+    // Reserved placeholder region. In debug builds, show the load error (if
+    // any) so failures are diagnosable on-device without a logcat/console.
+    final label = (kDebugMode && _error != null)
+        ? 'Ad failed — $_error'
+        : '[ Banner Ad Placeholder ]';
     return Container(
       height: _height,
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -82,9 +86,12 @@ class _BannerAdSlotState extends State<BannerAdSlot> {
         border: Border.all(color: AppColors.locked, width: 1),
       ),
       alignment: Alignment.center,
-      child: const Text(
-        '[ Banner Ad Placeholder ]',
-        style: TextStyle(color: AppColors.textMuted, fontSize: 12, letterSpacing: 1),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: Text(
+        label,
+        textAlign: TextAlign.center,
+        maxLines: 2,
+        style: const TextStyle(color: AppColors.textMuted, fontSize: 12, letterSpacing: 1),
       ),
     );
   }
